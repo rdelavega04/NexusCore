@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="NexusCore.Api/NexusCore.Api.csproj" />
+  <Project Path="NexusCore.Application/NexusCore.Application.csproj" />
+  <Project Path="NexusCore.Domain/NexusCore.Domain.csproj" />
+  <Project Path="NexusCore.Infastructure/NexusCore.Infrastructure.csproj" />
+</Solution>
