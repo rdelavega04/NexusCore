@@ -2,5 +2,5 @@
   <Project Path="NexusCore.Api/NexusCore.Api.csproj" />
   <Project Path="NexusCore.Application/NexusCore.Application.csproj" />
   <Project Path="NexusCore.Domain/NexusCore.Domain.csproj" />
-  <Project Path="NexusCore.Infastructure/NexusCore.Infrastructure.csproj" />
+  <Project Path="NexusCore.Infrastructure/NexusCore.Infrastructure.csproj" />
 </Solution>

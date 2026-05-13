@@ -1,0 +1,37 @@
+<div class="shell">
+  <aside class="sidenav">
+    <div class="sidenav-top">
+      <a class="logo" routerLink="/" aria-label="NexusCore Home">
+        <img src="/logo.png" alt="NexusCore" />
+      </a>
+    </div>
+
+    <nav class="nav">
+      <a class="nav-item" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <i class="pi pi-home"></i>
+        <span>Home</span>
+      </a>
+
+      <a class="nav-item" routerLink="/customers" routerLinkActive="active">
+        <i class="pi pi-users"></i>
+        <span>Customers</span>
+      </a>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="brand">
+        <div class="title">NexusCore</div>
+        <div class="subtitle">Clean Architecture demo</div>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-frame">
+        <router-outlet />
+      </div>
+    </main>
+  </div>
+</div>
+

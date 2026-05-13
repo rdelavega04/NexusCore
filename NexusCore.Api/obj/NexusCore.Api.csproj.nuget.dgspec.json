@@ -37,8 +37,8 @@
               "C:\\Dev\\NexusCore\\NexusCore.Application\\NexusCore.Application.csproj": {
                 "projectPath": "C:\\Dev\\NexusCore\\NexusCore.Application\\NexusCore.Application.csproj"
               },
-              "C:\\Dev\\NexusCore\\NexusCore.Infastructure\\NexusCore.Infrastructure.csproj": {
-                "projectPath": "C:\\Dev\\NexusCore\\NexusCore.Infastructure\\NexusCore.Infrastructure.csproj"
+              "C:\\Dev\\NexusCore\\NexusCore.Infrastructure\\NexusCore.Infrastructure.csproj": {
+                "projectPath": "C:\\Dev\\NexusCore\\NexusCore.Infrastructure\\NexusCore.Infrastructure.csproj"
               }
             }
           }
@@ -63,6 +63,16 @@
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[10.0.7, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[10.0.7, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[10.1.7, )"
             }
           },
           "imports": [
@@ -554,6 +564,12 @@
         "net10.0": {
           "framework": "net10.0",
           "targetAlias": "net10.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[10.0.4, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -1190,14 +1206,14 @@
         }
       }
     },
-    "C:\\Dev\\NexusCore\\NexusCore.Infastructure\\NexusCore.Infrastructure.csproj": {
+    "C:\\Dev\\NexusCore\\NexusCore.Infrastructure\\NexusCore.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Dev\\NexusCore\\NexusCore.Infastructure\\NexusCore.Infrastructure.csproj",
+        "projectUniqueName": "C:\\Dev\\NexusCore\\NexusCore.Infrastructure\\NexusCore.Infrastructure.csproj",
         "projectName": "NexusCore.Infrastructure",
-        "projectPath": "C:\\Dev\\NexusCore\\NexusCore.Infastructure\\NexusCore.Infrastructure.csproj",
+        "projectPath": "C:\\Dev\\NexusCore\\NexusCore.Infrastructure\\NexusCore.Infrastructure.csproj",
         "packagesPath": "C:\\Users\\cuzzn\\.nuget\\packages\\",
-        "outputPath": "C:\\Dev\\NexusCore\\NexusCore.Infastructure\\obj\\",
+        "outputPath": "C:\\Dev\\NexusCore\\NexusCore.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
