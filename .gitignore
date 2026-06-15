@@ -1,1 +1,36 @@
+# --- .NET / Visual Studio ---
+bin/
+obj/
+*.exe
+*.dll
+*.pdb
+*.user
+*.suo
+*.vspscc
+*.vssscc
+.vs/
+.vscode/
+appsettings.Development.json
+nlog.config
 
+# --- Angular / Node.js ---
+node_modules/
+dist/
+.angular/
+.npm/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.editorconfig
+.cache/
+
+# --- Databases / SQL ---
+*.db
+*.local
+# We keep schema.sql because it's intentional, but ignore local backups
+*.backup
+*.dump
+
+# --- OS Specific ---
+.DS_Store
+Thumbs.db
