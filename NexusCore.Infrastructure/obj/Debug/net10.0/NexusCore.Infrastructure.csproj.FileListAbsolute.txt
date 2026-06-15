@@ -30,6 +30,7 @@ C:\Dev\NexusCore\NexusCore.Infrastructure\obj\Debug\net10.0\NexusCore.Infrastruc
 C:\Dev\NexusCore\NexusCore.Infrastructure\obj\Debug\net10.0\NexusCore.Infrastructure.AssemblyInfoInputs.cache
 C:\Dev\NexusCore\NexusCore.Infrastructure\obj\Debug\net10.0\NexusCore.Infrastructure.AssemblyInfo.cs
 C:\Dev\NexusCore\NexusCore.Infrastructure\obj\Debug\net10.0\NexusCore.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Dev\NexusCore\NexusCore.Infrastructure\obj\Debug\net10.0\NexusCore.Infrastructure.sourcelink.json
 C:\Dev\NexusCore\NexusCore.Infrastructure\obj\Debug\net10.0\NexusCor.E8B92458.Up2Date
 C:\Dev\NexusCore\NexusCore.Infrastructure\obj\Debug\net10.0\NexusCore.Infrastructure.dll
 C:\Dev\NexusCore\NexusCore.Infrastructure\obj\Debug\net10.0\refint\NexusCore.Infrastructure.dll

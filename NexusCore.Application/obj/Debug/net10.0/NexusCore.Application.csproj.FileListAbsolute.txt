@@ -8,6 +8,7 @@ C:\Dev\NexusCore\NexusCore.Application\obj\Debug\net10.0\NexusCore.Application.G
 C:\Dev\NexusCore\NexusCore.Application\obj\Debug\net10.0\NexusCore.Application.AssemblyInfoInputs.cache
 C:\Dev\NexusCore\NexusCore.Application\obj\Debug\net10.0\NexusCore.Application.AssemblyInfo.cs
 C:\Dev\NexusCore\NexusCore.Application\obj\Debug\net10.0\NexusCore.Application.csproj.CoreCompileInputs.cache
+C:\Dev\NexusCore\NexusCore.Application\obj\Debug\net10.0\NexusCore.Application.sourcelink.json
 C:\Dev\NexusCore\NexusCore.Application\obj\Debug\net10.0\NexusCor.BDAFAB0A.Up2Date
 C:\Dev\NexusCore\NexusCore.Application\obj\Debug\net10.0\NexusCore.Application.dll
 C:\Dev\NexusCore\NexusCore.Application\obj\Debug\net10.0\refint\NexusCore.Application.dll

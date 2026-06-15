@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using NexusCore.Application.Abstractions.Persistence;
 using NexusCore.Application.Services;
 using NexusCore.Infrastructure.Persistence;
+using NexusCore.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,7 @@ builder.Services.AddDbContext<NexusDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<INexusDbContext>(sp => sp.GetRequiredService<NexusDbContext>());
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<CustomerService>();
 
 var app = builder.Build();
