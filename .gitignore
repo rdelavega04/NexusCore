@@ -1,6 +1,6 @@
 # --- .NET / Visual Studio ---
-bin/
-obj/
+[Bb]in/
+[Oo]bj/
 *.exe
 *.dll
 *.pdb
@@ -12,6 +12,8 @@ obj/
 .vscode/
 appsettings.Development.json
 nlog.config
+*.userosscache
+*.sln.docstates
 
 # --- Angular / Node.js ---
 node_modules/
