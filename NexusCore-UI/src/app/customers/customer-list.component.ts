@@ -10,7 +10,13 @@ import { ButtonModule } from 'primeng/button';
 import { TableLazyLoadEvent } from 'primeng/table';
 import { catchError, debounceTime, distinctUntilChanged, EMPTY, finalize, of, Subject, switchMap, take, takeUntil } from 'rxjs';
 
-import { Customer, CustomerService, PaginatedCustomerResult } from './customer.service';
+import {
+  Customer,
+  CustomerService,
+  CustomerSortField,
+  PaginatedCustomerResult,
+  SortDirection,
+} from './customer.service';
 
 @Component({
   selector: 'app-customer-list',
@@ -37,11 +43,9 @@ export class CustomerListComponent implements OnInit, OnDestroy {
 
   pageSize = 40;
   totalRecords = 0;
-  
-  private lastSeenIdHistory: number[] = [0]; 
-  private currentFirst = 0;
+  sortField: CustomerSortField | undefined;
+  sortOrder = 1;
 
-  // Search Streams
   private readonly searchStream$ = new Subject<string>();
   private readonly destroy$ = new Subject<void>();
   globalFilterValue = '';
@@ -72,47 +76,32 @@ export class CustomerListComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  // Driven completely by standard user page navigation clicks
   loadData(event: TableLazyLoadEvent): void {
     if (this.isSearchMode) return;
 
-    const targetFirst = event.first ?? 0;
-    const targetRows = event.rows ?? this.pageSize;
-    
-    this.loading = true;
-    this.pageSize = targetRows;
+    const skip = event.first ?? 0;
+    const rows = event.rows ?? this.pageSize;
 
-    let targetLastSeenId = 0;
-
-    if (targetFirst > this.currentFirst) {
-      targetLastSeenId = this.customers.length > 0 ? this.customers[this.customers.length - 1].id : 0;
-      if (!this.lastSeenIdHistory.includes(targetLastSeenId)) {
-        this.lastSeenIdHistory.push(targetLastSeenId);
-      }
-    } else if (targetFirst < this.currentFirst) {
-      const pageIndex = targetFirst / targetRows;
-      targetLastSeenId = this.lastSeenIdHistory[pageIndex] ?? 0;
-    } else {
-      targetLastSeenId = 0;
-      this.lastSeenIdHistory = [0];
+    if (event.sortField !== undefined) {
+      this.sortField = event.sortField as CustomerSortField;
+      this.sortOrder = event.sortOrder ?? 1;
     }
 
-    this.currentFirst = targetFirst;
+    this.loading = true;
+    this.pageSize = rows;
 
-    this.customersApi.getCustomersPage(targetLastSeenId, targetRows)
+    this.customersApi
+      .getCustomersPage(skip, rows, this.sortField, this.toSortDirection(this.sortOrder))
       .pipe(
         catchError(() => of({ items: [], totalRecords: 0 })),
         finalize(() => {
           this.loading = false;
           this.cdr.markForCheck();
-        })
+        }),
       )
       .subscribe(res => {
-        // Extract the explicit array chunk property from the backend envelope wrapper
         this.customers = res.items;
-        
-        // Feed the live database count cleanly into the view layout context
-        this.totalRecords = res.totalRecords; 
+        this.totalRecords = res.totalRecords;
       });
   }
 
@@ -124,33 +113,37 @@ export class CustomerListComponent implements OnInit, OnDestroy {
         const cleanTerm = searchTerm.trim();
         this.loading = true;
 
-        // Context: Clear search mode -> Go back to the metadata pagination object
         if (!cleanTerm) {
           this.isSearchMode = false;
-          this.currentFirst = 0;
-          this.lastSeenIdHistory = [0];
-          return this.customersApi.getCustomersPage(0, this.pageSize);
+          return this.customersApi.getCustomersPage(
+            0,
+            this.pageSize,
+            this.sortField,
+            this.toSortDirection(this.sortOrder),
+          );
         }
 
-        // Context: Active search mode -> Keep the raw customer array stream
         this.isSearchMode = true;
         return this.customersApi.searchCustomersByLastName(cleanTerm).pipe(
-          catchError(() => of([]))
+          catchError(() => of([])),
         );
       }),
-      takeUntil(this.destroy$)
+      takeUntil(this.destroy$),
     ).subscribe(res => {
       this.loading = false;
-      
-      // Type Guard Check: Handle PaginatedCustomerResult vs raw Customer[]
+
       if (res && 'items' in res) {
-        this.customers = res.items;
-        this.totalRecords = res.totalRecords;
+        const paginated = res as PaginatedCustomerResult;
+        this.customers = paginated.items;
+        this.totalRecords = paginated.totalRecords;
+        if (this.dt) {
+          this.dt.first = 0;
+        }
       } else {
-        // We are processing a flat customer list returned from the indexed search match
         this.customers = res as Customer[];
+        this.totalRecords = this.customers.length;
       }
-      
+
       this.cdr.markForCheck();
     });
   }
@@ -177,8 +170,8 @@ export class CustomerListComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const state = this.addForm.state.trim();
-    if (state.length > 2) {
+    const state = this.addForm.state.trim().toUpperCase();
+    if (state.length > 0 && state.length !== 2) {
       this.submitError = 'State must be a 2-letter abbreviation.';
       return;
     }
@@ -209,10 +202,15 @@ export class CustomerListComponent implements OnInit, OnDestroy {
         this.addDialogVisible = false;
         this.globalFilterValue = '';
         this.isSearchMode = false;
-        this.currentFirst = 0;
-        this.lastSeenIdHistory = [0];
-        if (this.dt) this.dt.first = 0; 
+        if (this.dt) {
+          this.dt.first = 0;
+        }
+        this.loadData({ first: 0, rows: this.pageSize, sortField: this.sortField, sortOrder: this.sortOrder });
       });
+  }
+
+  private toSortDirection(sortOrder: number): SortDirection {
+    return sortOrder === -1 ? 'desc' : 'asc';
   }
 
   private extractErrorMessage(err: unknown): string {

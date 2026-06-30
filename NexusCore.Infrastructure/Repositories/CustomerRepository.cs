@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using NexusCore.Application.Abstractions.Persistence;
 using NexusCore.Domain.Entities;
@@ -14,24 +15,28 @@ public sealed class CustomerRepository : ICustomerRepository
         _db = db;
     }
 
-    // 1. Keyset Paginated Query - O(1) constant performance on massive tables
-    public async Task<IReadOnlyList<Customer>> GetPaginatedAsync(int lastSeenId, int pageSize, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<Customer>> GetPaginatedAsync(
+        int skip,
+        int pageSize,
+        string? sortBy,
+        bool sortDescending,
+        CancellationToken cancellationToken = default)
     {
-        // AsNoTracking: This bypasses Entity Framework's internal change tracker mechanism, cutting down memory allocation drastically when querying thousands of data rows meant exclusively for UI display
-        return await _db.Customers
-            .AsNoTracking()
-            .OrderBy(c => c.Id) // Must sort by our primary key sequence
-            .Where(c => c.Id > lastSeenId) // Database immediately jumps here using the PK index
+        var query = ApplySort(_db.Customers.AsNoTracking(), sortBy, sortDescending);
+
+        return await query
+            .Skip(skip)
             .Take(pageSize)
             .ToListAsync(cancellationToken);
     }
 
-    // 2. Index Filtered Query - Instantly hits the B-Tree index on LastName
     public async Task<IReadOnlyList<Customer>> GetByLastNameAsync(string lastName, CancellationToken cancellationToken = default)
     {
         return await _db.Customers
             .AsNoTracking()
-            .Where(c => c.LastName == lastName) // Triggers IX_customers_last_name
+            .Where(c => c.LastName == lastName)
+            .OrderBy(c => c.LastName)
+            .ThenBy(c => c.FirstName)
             .ToListAsync(cancellationToken);
     }
 
@@ -46,5 +51,29 @@ public sealed class CustomerRepository : ICustomerRepository
         return await _db.Customers
             .AsNoTracking()
             .CountAsync(cancellationToken);
+    }
+
+    private static IQueryable<Customer> ApplySort(IQueryable<Customer> query, string? sortBy, bool desc)
+    {
+        return (sortBy?.ToLowerInvariant()) switch
+        {
+            "customernumber" => OrderBy(query, c => c.CustomerNumber, desc),
+            "name" => desc
+                ? query.OrderByDescending(c => c.LastName).ThenByDescending(c => c.FirstName)
+                : query.OrderBy(c => c.LastName).ThenBy(c => c.FirstName),
+            "email" => OrderBy(query, c => c.Email, desc),
+            "city" => OrderBy(query, c => c.City, desc),
+            "state" => OrderBy(query, c => c.State, desc),
+            "zip" => OrderBy(query, c => c.Zipcode, desc),
+            _ => OrderBy(query, c => c.Id, desc),
+        };
+    }
+
+    private static IOrderedQueryable<Customer> OrderBy<TKey>(
+        IQueryable<Customer> query,
+        Expression<Func<Customer, TKey>> keySelector,
+        bool desc)
+    {
+        return desc ? query.OrderByDescending(keySelector) : query.OrderBy(keySelector);
     }
 }

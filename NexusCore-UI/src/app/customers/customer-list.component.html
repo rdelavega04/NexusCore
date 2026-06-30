@@ -14,12 +14,12 @@
       />
     </span>
     <div class="toolbar-right">
-      <!-- <p-button
+      <p-button
         label="Add customer"
         icon="pi pi-plus"
         (onClick)="openAddDialog()"
         [disabled]="loading"
-      ></p-button> -->
+      ></p-button>
       <span class="meta">{{ totalRecords }} total records</span>
     </div>
   </div>
@@ -39,15 +39,35 @@
     dataKey="id"
     responsiveLayout="scroll"
     styleClass="customers-table"
+    [sortField]="sortField"
+    [sortOrder]="sortOrder"
   >
     <ng-template pTemplate="header">
       <tr>
-        <th style="width: 15%">Customer #</th>
-        <th style="width: 30%">Name / Address</th>
-        <th style="width: 25%">Email</th>
-        <th style="width: 15%">City</th>
-        <th style="width: 10%">State</th>
-        <th style="width: 10%">Zip</th>
+        <th pSortableColumn="customerNumber" [pSortableColumnDisabled]="isSearchMode" style="width: 15%">
+          Customer #
+          <p-sortIcon field="customerNumber" />
+        </th>
+        <th pSortableColumn="name" [pSortableColumnDisabled]="isSearchMode" style="width: 30%">
+          Name / Address
+          <p-sortIcon field="name" />
+        </th>
+        <th pSortableColumn="email" [pSortableColumnDisabled]="isSearchMode" style="width: 25%">
+          Email
+          <p-sortIcon field="email" />
+        </th>
+        <th pSortableColumn="city" [pSortableColumnDisabled]="isSearchMode" style="width: 15%">
+          City
+          <p-sortIcon field="city" />
+        </th>
+        <th pSortableColumn="state" [pSortableColumnDisabled]="isSearchMode" style="width: 10%">
+          State
+          <p-sortIcon field="state" />
+        </th>
+        <th pSortableColumn="zip" [pSortableColumnDisabled]="isSearchMode" style="width: 10%">
+          Zip
+          <p-sortIcon field="zip" />
+        </th>
       </tr>
     </ng-template>
 
@@ -81,7 +101,7 @@
   </p-table>
 </p-card>
 
-<!-- <p-dialog
+<p-dialog
   header="Add customer"
   [(visible)]="addDialogVisible"
   [modal]="true"
@@ -94,28 +114,37 @@
   <div class="add-form">
     <label class="field">
       <span>Name <span class="req">*</span></span>
-      <input pInputText type="text" [(ngModel)]="addForm.name" placeholder="Full name" [disabled]="saving" />
-    </label>
-    <label class="field">
-      <span>Email</span>
-      <input pInputText type="email" [(ngModel)]="addForm.email" autocomplete="email" [disabled]="saving" />
-    </label>
-    <label class="field">
-      <span>City</span>
-      <input pInputText type="text" [(ngModel)]="addForm.city" [disabled]="saving" />
-    </label>
-    <label class="field">
-      <span>State</span>
       <input
         pInputText
         type="text"
-        [(ngModel)]="addForm.state"
-        maxlength="2"
-        placeholder="e.g. NY"
+        [(ngModel)]="addForm.name"
+        placeholder="Full name"
         [disabled]="saving"
-        style="text-transform: uppercase"
+        required
       />
     </label>
+    <label class="field">
+      <span>Email <span class="hint">recommended</span></span>
+      <input pInputText type="email" [(ngModel)]="addForm.email" autocomplete="email" [disabled]="saving" />
+    </label>
+    <div class="field-row">
+      <label class="field">
+        <span>City <span class="hint">recommended</span></span>
+        <input pInputText type="text" [(ngModel)]="addForm.city" [disabled]="saving" />
+      </label>
+      <label class="field">
+        <span>State <span class="hint">recommended</span></span>
+        <input
+          pInputText
+          type="text"
+          [(ngModel)]="addForm.state"
+          maxlength="2"
+          placeholder="e.g. NY"
+          [disabled]="saving"
+          style="text-transform: uppercase"
+        />
+      </label>
+    </div>
     <label class="field">
       <span>Zip</span>
       <input pInputText type="text" [(ngModel)]="addForm.zip" maxlength="10" [disabled]="saving" />
@@ -126,4 +155,4 @@
     <p-button label="Cancel" severity="secondary" [disabled]="saving" (onClick)="addDialogVisible = false"></p-button>
     <p-button label="Save" icon="pi pi-check" [loading]="saving" (onClick)="submitAdd()"></p-button>
   </ng-template>
-</p-dialog> -->
+</p-dialog>

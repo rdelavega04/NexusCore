@@ -19,23 +19,30 @@ public sealed class CustomersController : ControllerBase
     }
 
     // ==========================================
-    // 1. HIGH-PERFORMANCE KEYSET PAGINATION
+    // 1. PAGINATED LIST WITH SERVER-SIDE SORT
     // ==========================================
     [HttpGet]
     [ProducesResponseType(typeof(PaginatedResponse<CustomerDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<PaginatedResponse<CustomerDto>>> GetPaginated(
-    [FromQuery] int lastSeenId = 0,
-    [FromQuery] int pageSize = 20,
-    CancellationToken cancellationToken = default)
+        [FromQuery] int skip = 0,
+        [FromQuery] int pageSize = 20,
+        [FromQuery] string? sortBy = null,
+        [FromQuery] string sortDirection = "asc",
+        CancellationToken cancellationToken = default)
     {
-        // Enforce upper bound
         if (pageSize > 100) pageSize = 100;
+        if (skip < 0) skip = 0;
 
-        // 1. Fetch the total dynamic count from the database service
+        var sortDescending = string.Equals(sortDirection, "desc", StringComparison.OrdinalIgnoreCase);
+
         int totalCount = await _customerService.GetTotalCountAsync(cancellationToken);
 
-        // 2. Fetch the specific keyset page slice
-        var customers = await _customerService.GetCustomersPageAsync(lastSeenId, pageSize);
+        var customers = await _customerService.GetCustomersPageAsync(
+            skip,
+            pageSize,
+            sortBy,
+            sortDescending,
+            cancellationToken);
 
         // 3. Return the combined metadata payload
         var response = new PaginatedResponse<CustomerDto>

@@ -77,6 +77,12 @@
   color: var(--red-500, #ef4444);
 }
 
+.add-form .hint {
+  font-weight: 400;
+  color: var(--text-color-secondary, #6b7280);
+  font-size: 0.8rem;
+}
+
 .field-row {
   display: grid;
   grid-template-columns: 1fr 1fr;

@@ -22,6 +22,16 @@ export interface CreateCustomerPayload {
   zip?: string | null;
 }
 
+export type CustomerSortField =
+  | 'customerNumber'
+  | 'name'
+  | 'email'
+  | 'city'
+  | 'state'
+  | 'zip';
+
+export type SortDirection = 'asc' | 'desc';
+
 export interface PaginatedCustomerResult {
   items: Customer[];
   totalRecords: number;
@@ -33,11 +43,23 @@ export class CustomerService {
 
   constructor(private readonly http: HttpClient) { }
 
-  // High-Performance Keyset Pagination Fetch
-  getCustomersPage(lastSeenId: number, pageSize: number): Observable<PaginatedCustomerResult> {
-    return this.http.get<PaginatedCustomerResult>(
-      `${this.baseUrl}?lastSeenId=${lastSeenId}&pageSize=${pageSize}`
-    );
+  // Paginated fetch with optional server-side sort
+  getCustomersPage(
+    skip: number,
+    pageSize: number,
+    sortBy?: CustomerSortField | null,
+    sortDirection: SortDirection = 'asc',
+  ): Observable<PaginatedCustomerResult> {
+    let params = new HttpParams()
+      .set('skip', skip)
+      .set('pageSize', pageSize)
+      .set('sortDirection', sortDirection);
+
+    if (sortBy) {
+      params = params.set('sortBy', sortBy);
+    }
+
+    return this.http.get<PaginatedCustomerResult>(this.baseUrl, { params });
   }
 
   // Index-Optimized Server-Side Name Search

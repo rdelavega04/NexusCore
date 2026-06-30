@@ -15,14 +15,29 @@ public sealed class CustomerService
     }
 
     // Expose the optimized keyset pagination query through the service
-    public async Task<IReadOnlyList<CustomerDto>> GetCustomersPageAsync(int lastSeenId, int pageSize, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<CustomerDto>> GetCustomersPageAsync(
+        int skip,
+        int pageSize,
+        string? sortBy,
+        bool sortDescending,
+        CancellationToken cancellationToken = default)
     {
-        // Fetch limited chunk from repository
-        var customers = await _customerRepository.GetPaginatedAsync(lastSeenId, pageSize, cancellationToken);
+        var customers = await _customerRepository.GetPaginatedAsync(
+            skip,
+            pageSize,
+            sortBy,
+            sortDescending,
+            cancellationToken);
 
-        // Project to lightweight DTO transfer objects
         return customers.Select(c => new CustomerDto(
-            c.Id, c.CustomerNumber, c.FirstName, c.LastName, c.Email, c.City, c.State
+            c.Id,
+            c.CustomerNumber,
+            c.FirstName,
+            c.LastName,
+            c.Email,
+            c.City,
+            c.State,
+            c.Zipcode
         )).ToList();
     }
 
@@ -35,7 +50,14 @@ public sealed class CustomerService
         var customers = await _customerRepository.GetByLastNameAsync(lastName.Trim(), cancellationToken);
 
         return customers.Select(c => new CustomerDto(
-            c.Id, c.CustomerNumber, c.FirstName, c.LastName, c.Email, c.City, c.State
+            c.Id,
+            c.CustomerNumber,
+            c.FirstName,
+            c.LastName,
+            c.Email,
+            c.City,
+            c.State,
+            c.Zipcode
         )).ToList();
     }
 
